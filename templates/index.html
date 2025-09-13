@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Coffee Shop</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="chatbox">
+    <h2>☕ Chatbot Coffee Shop</h2>
+    <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Nhập tin nhắn..." style="width: 75%;">
+    <button onclick="sendMessage()">Gửi</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      let input = document.getElementById("userInput");
+      let msg = input.value;
+      if (!msg) return;
+
+      let messagesDiv = document.getElementById("messages");
+      messagesDiv.innerHTML += `<div class="message user"><b>Bạn:</b> ${msg}</div>`;
+
+      let response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+      let data = await response.json();
+
+      messagesDiv.innerHTML += `<div class="message bot"><b>Bot:</b> ${data.reply}</div>`;
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
